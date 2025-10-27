@@ -4,14 +4,17 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\raylib-5.5_win64_mingw-w64\\include"
+                "C:\\raylib-5.5_win64_mingw-w64\\include",
+                "C:\\raylib-5.5_win64_mingw-w64\\src",
+                "C:\\mingw64\\include",
+                "C:\\raylib-5.5_win64_mingw-w64\\lib"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:\\mingw64\\bin\\gcc.exe",
+            "compilerPath": "C:\\mingw64\\bin\\g++.exe",
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "windows-gcc-x64"
