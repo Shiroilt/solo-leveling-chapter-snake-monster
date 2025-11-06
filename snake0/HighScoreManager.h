@@ -21,7 +21,7 @@ struct HighScore {
 class HighScoreManager {
 private:
     vector<HighScore> highScores;
-    const int MAX_SCORES = 3;
+    const int MAX_SCORES = 10;
 
 public:
     HighScoreManager();
