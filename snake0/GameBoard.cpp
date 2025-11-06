@@ -123,7 +123,9 @@ void GameBoard::showLevelUpMessage() {
 }
 
 void GameBoard::draw() {
-    system("cls");
+    //system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     drawBorder();
     displayGameInfo();
     displayInstructions();
@@ -191,7 +193,9 @@ void GameBoard::getInput() {
 }
 
 void GameBoard::displayGameOver() {
-    system("cls");
+    //system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     MessageBeep(MB_ICONHAND);
     setColor(12);
     cout << "\n\n";

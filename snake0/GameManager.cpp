@@ -4,7 +4,9 @@ using namespace std;
 GameManager::GameManager() {}
 
 void GameManager::showMainMenu() {
-    system("cls");
+    //system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     setColor(11);
     cout << "╔══════════════════════════════════════╗\n";
     cout << "║           🐍 SNAKE GAME 🐍          ║\n";
@@ -22,7 +24,9 @@ void GameManager::showMainMenu() {
 }
 
 void GameManager::showLevelProgressionInfo() {
-    system("cls");
+    //system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     setColor(14);
     cout << "╔══════════════════════════════════════╗\n";
     cout << "║         LEVEL PROGRESSION            ║\n";
@@ -51,7 +55,9 @@ void GameManager::showLevelProgressionInfo() {
 }
 
 void GameManager::showHighScores() {
-    system("cls");
+    //system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     setColor(14);
     cout << "╔══════════════════════════════════════╗\n";
     cout << "║            HIGH SCORES               ║\n";
@@ -101,8 +107,10 @@ void GameManager::showHighScores() {
 }
 
 void GameManager::showInstructions() {
-    system("cls");
-    setColor(14);
+   // system("cls");
+   COORD coord = {0, 0};
+   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord); 
+   setColor(14);
     cout << "╔══════════════════════════════════════╗\n";
     cout << "║            INSTRUCTIONS              ║\n";
     cout << "╚══════════════════════════════════════╝\n\n";
@@ -160,7 +168,9 @@ void GameManager::startGame() {
     GameBoard* board = new GameBoard(&highScoreManager, modeChoice, playerName);
     board->spawnFood();
     
-    system("cls");
+    // system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     cout << "\n\n   Starting at Level 1!\n";
     cout << "   Reach Level 10 to become a Snake Master!\n";
     cout << "   Current High Score: " << highScoreManager.getHighestScore() << "\n";
