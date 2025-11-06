@@ -47,20 +47,35 @@ Welcome to my first major C++ project! This Snake Game represents my journey int
 ## 🏗️ Project Structure
 snake_game/
 ├── main.cpp # Program entry point
+
 ├── Common.h # Shared constants and utilities
+
 ├── Common.cpp # Utility function implementations
+
 ├── HighScoreManager.h # High score management interface
+
 ├── HighScoreManager.cpp # High score logic implementation
+
 ├── Food.h # Food class interface
+
 ├── Food.cpp # Food behavior implementation
+
 ├── Snake.h # Snake class interface
+
 ├── Snake.cpp # Snake movement and rendering
+
 ├── GameBoard.h # Game board management interface
+
 ├── GameBoard.cpp # Game state and rendering logic
+
 ├── GameManager.h # Main game flow interface
+
 ├── GameManager.cpp # Menu and game flow implementation
+
 ├── highscores.txt # High score data storage
+
 ├── compile.bat # Windows compilation script
+
 └── README.md # Project documentation
 
 
