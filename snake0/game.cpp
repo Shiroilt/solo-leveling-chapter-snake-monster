@@ -2,6 +2,9 @@
 #include <conio.h>
 #include <windows.h>
 #include <fstream>
+#include <iostream>
+#pragma comment(lib, "Winmm.lib")
+
 using namespace std;
 
 #define MAX_LENGTH 1000
@@ -14,7 +17,6 @@ const char DIR_RIGHT = 'R';
 
 int consoleWidth, consoleHeight;
 
-// 🟢 Set console text color
 void setColor(int color) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
@@ -27,7 +29,7 @@ void hideCursor() {
     SetConsoleCursorInfo(hOut, &cursorInfo);
 }
 
-// 🟢 Initialize console screen dimensions
+
 void initScreen() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -36,7 +38,6 @@ void initScreen() {
     consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 }
 
-// 🟢 Move cursor
 void gotoxy(int x, int y) {
     COORD coord;
     coord.X = x;
@@ -59,39 +60,44 @@ struct HighScore {
     int score;
     string date;
     
-    HighScore() : playerName(""), score(0), date("") {} // Default constructor
+    HighScore() : playerName(""), score(0), date("") {} 
     HighScore(string name, int sc, string dt) : playerName(name), score(sc), date(dt) {}
     
     bool operator<(const HighScore& other) const {
-        return score > other.score; // For descending order
+        return score < other.score; 
     }
 };
 
 class HighScoreManager {
 private:
     vector<HighScore> highScores;
-    const int MAX_SCORES = 10;
+    const int MAX_SCORES = 3;
 
 public:
     HighScoreManager() {
         loadHighScores();
     }
     
-    void loadHighScores() {
+   void loadHighScores() {
         highScores.clear();
         ifstream file(HIGHSCORE_FILE);
-        if (file.is_open()) {
-            string name, date;
-            int score;
-            while (file >> name >> score >> date) {
-                // Replace underscores with spaces in name
-                replace(name.begin(), name.end(), '_', ' ');
-                highScores.push_back(HighScore(name, score, date));
-            }
-            file.close();
+        if (!file.is_open()) {
+            // optional debug
+            // cerr << "Could not open " << HIGHSCORE_FILE << " for reading.\n";
+            return;
         }
-        sort(highScores.begin(), highScores.end());
+        string name, date;
+        int score;
+        while (file >> name >> score >> date) {
+            replace(name.begin(), name.end(), '_', ' ');
+            highScores.push_back(HighScore(name, score, date));
+        }
+        file.close();
+        sort(highScores.begin(), highScores.end(), [](const HighScore &a, const HighScore &b){
+            return a.score > b.score; // descending
+        });
     }
+
     
     void saveHighScores() {
         ofstream file(HIGHSCORE_FILE);
@@ -106,22 +112,22 @@ public:
     }
     
     void addHighScore(const string& playerName, int score) {
-        // Get current date
         time_t now = time(0);
         tm* localtm = localtime(&now);
         char dateStr[11];
         strftime(dateStr, sizeof(dateStr), "%Y-%m-%d", localtm);
-        
+
         highScores.push_back(HighScore(playerName, score, dateStr));
-        sort(highScores.begin(), highScores.end());
-        
-        // Keep only top MAX_SCORES
-        if (highScores.size() > MAX_SCORES) {
-            highScores.erase(highScores.begin() + MAX_SCORES, highScores.end());
+        sort(highScores.begin(), highScores.end(), [](const HighScore &a, const HighScore &b){
+            return a.score > b.score;
+        });
+
+        if ((int)highScores.size() > MAX_SCORES) {
+            highScores.resize(MAX_SCORES);
         }
-        
         saveHighScores();
     }
+
     
     vector<HighScore> getHighScores() {
         return highScores;
@@ -136,6 +142,14 @@ public:
         if (highScores.size() < MAX_SCORES) return true;
         return score > highScores.back().score;
     }
+    
+    // NEW METHOD: Check if score qualifies as high score (more accurate)
+    bool qualifiesAsHighScore(int score) {
+        if (highScores.empty()) return true;
+        if (highScores.size() < MAX_SCORES) return true;
+        return score >= highScores.back().score; // allow equal to the current lowest
+    }
+
 };
 
 class Food {
@@ -299,13 +313,28 @@ private:
     Snake* snake;
     Food food;
     int score;
+    int level;
+    int baseSpeed;
+    int currentSpeed;
     bool gameOver;
     HighScoreManager* highScoreManager;
+    string playerName;
 
 public:
-    GameBoard(HighScoreManager* hsm) : score(0), gameOver(false), highScoreManager(hsm) {
+    GameBoard(HighScoreManager* hsm, int difficulty, const string& name) : 
+        score(0), level(1), gameOver(false), highScoreManager(hsm), playerName(name) {
         srand(time(0));
         initScreen();
+        
+        // Set base speed based on difficulty
+        switch(difficulty) {
+            case 1: baseSpeed = 180; break; // Easy
+            case 2: baseSpeed = 120; break; // Normal
+            case 3: baseSpeed = 70;  break; // Hard
+            default: baseSpeed = 120; break;
+        }
+        currentSpeed = baseSpeed;
+        
         // Start snake in middle with initial length of 3
         snake = new Snake(consoleWidth / 2, consoleHeight / 2, 3);
     }
@@ -315,7 +344,18 @@ public:
     }
 
     int getScore() { return score; }
+    int getLevel() { return level; }
+    int getSpeed() { return currentSpeed; }
     bool isGameOver() { return gameOver; }
+
+    void updateLevel() {
+        int newLevel = (score / 10) + 1;
+        if (newLevel > level) {
+            level = newLevel;
+            // Increase speed by 10% each level, but don't go below 30ms
+            currentSpeed = max(30, baseSpeed - (level - 1) * (baseSpeed / 10));
+        }
+    }
 
     void spawnFood() {
         food.spawn(snake->getBody(), consoleWidth, consoleHeight);
@@ -341,30 +381,78 @@ public:
         setColor(7); // Reset to default
     }
 
-    void displayGameInfo(const string& playerName) {
+    void displayGameInfo() {
         gotoxy(2, 0);
         setColor(11); // Cyan
         cout << "Player: " << playerName;
         
-        gotoxy(consoleWidth / 2 - 6, 0);
+        gotoxy(consoleWidth / 2 - 8, 0);
         setColor(14); // Yellow
         cout << "Score: " << score;
         
-        gotoxy(consoleWidth - 20, 0);
+        gotoxy(consoleWidth / 2 + 10, 0);
         setColor(13); // Magenta
-        cout << "High Score: " << highScoreManager->getHighestScore();
+        cout << "Level: " << level;
+        
+        gotoxy(consoleWidth - 20, 0);
+        setColor(10); // Green
+        cout << "Speed: " << currentSpeed << "ms";
+        
+        // Show high score
+        gotoxy(consoleWidth - 35, 0);
+        setColor(6); // Orange/Brown
+        cout << "Best: " << highScoreManager->getHighestScore();
     }
 
     void displayInstructions() {
         gotoxy(2, consoleHeight - 1);
         setColor(8); // Gray
-        cout << "Controls: WASD or Arrow Keys";
+        cout << "Controls: WASD or Arrow Keys | P: Pause";
     }
 
-    void draw(const string& playerName) {
+    void showLevelUpMessage() {
+        int centerX = consoleWidth / 2 - 10;
+        int centerY = consoleHeight / 2;
+        MessageBeep(MB_OK);
+        gotoxy(centerX, centerY - 1);
+        setColor(14); // Yellow
+        cout << "╔══════════════════════╗";
+        
+        gotoxy(centerX, centerY);
+        setColor(14);
+        cout << "║      LEVEL UP!       ║";
+        
+        gotoxy(centerX, centerY + 1);
+        setColor(14);
+        cout << "║   Now at Level " << setw(2) << level << "   ║";
+        
+        gotoxy(centerX, centerY + 2);
+        setColor(14);
+        cout << "╚══════════════════════╝";
+        
+        // Flash the message
+        for (int i = 0; i < 3; i++) {
+            Sleep(300);
+            gotoxy(centerX, centerY);
+            setColor(12); // Red
+            cout << "║      LEVEL UP!       ║";
+            Sleep(300);
+            gotoxy(centerX, centerY);
+            setColor(14); // Yellow
+            cout << "║      LEVEL UP!       ║";
+        }
+        
+        // Clear the message
+        for (int y = centerY - 1; y <= centerY + 2; y++) {
+            gotoxy(centerX, y);
+            cout << "                      ";
+        }
+    }
+
+    void draw() {
         system("cls");
         drawBorder();
-        displayGameInfo(playerName);
+        displayGameInfo();
         displayInstructions();
         
         snake->draw();
@@ -382,6 +470,17 @@ public:
         
         if (foodEaten) {
             score++;
+            MessageBeep(MB_ICONASTERISK);
+            int oldLevel = level;
+            updateLevel();
+            
+            // Show level up message if level changed
+            if (level > oldLevel) {
+                draw(); // Redraw the game first
+                showLevelUpMessage();
+                draw(); // Redraw again to restore game state
+            }
+            
             spawnFood();
         }
         
@@ -425,9 +524,9 @@ public:
         }
     }
     
-    void displayGameOver(const string& playerName) {
+    void displayGameOver() {
         system("cls");
-        
+        MessageBeep(MB_ICONHAND);
         setColor(12); // Red
         cout << "\n\n";
         cout << "   ╔══════════════════════════════╗\n";
@@ -437,15 +536,33 @@ public:
         setColor(7); // White
         cout << "   Player: " << playerName << endl;
         cout << "   Final Score: " << score << endl;
+        cout << "   Level Reached: " << level << endl;
         cout << "   High Score: " << highScoreManager->getHighestScore() << endl;
         
-        // Check if this is a new high score
-        bool isNewHighScore = highScoreManager->isHighScore(score);
-        if (isNewHighScore) {
+        int highest = highScoreManager->getHighestScore();
+        if (score > highest && score > 0) {
             highScoreManager->addHighScore(playerName, score);
             setColor(14); // Yellow
             cout << "\n   🎉 NEW HIGH SCORE! 🎉\n";
             cout << "   Congratulations, " << playerName << "!\n";
+        }
+        else if (score == highest && score > 0) {
+            setColor(11); // Cyan
+            cout << "\n   ⭐ You matched the high score! ⭐\n";
+        }
+
+        
+        // Display performance message based on level
+        cout << "\n";
+        setColor(11); // Cyan
+        if (level >= 10) {
+            cout << "   🏆 LEGENDARY! You're a Snake Master!\n";
+        } else if (level >= 7) {
+            cout << "   ⭐ EXCELLENT! Great skills!\n";
+        } else if (level >= 4) {
+            cout << "   👍 GOOD JOB! Keep practicing!\n";
+        } else {
+            cout << "   💪 Nice try! You'll do better next time!\n";
         }
         
         setColor(10); // Green
@@ -475,8 +592,38 @@ public:
         cout << "1. Start New Game\n";
         cout << "2. View High Scores\n";
         cout << "3. Instructions\n";
-        cout << "4. Exit\n\n";
-        cout << "Enter your choice (1-4): ";
+        cout << "4. Level Progression Info\n";
+        cout << "5. Exit\n\n";
+        cout << "Enter your choice (1-5): ";
+    }
+    
+    void showLevelProgressionInfo() {
+        system("cls");
+        setColor(14); // Yellow
+        cout << "╔══════════════════════════════════════╗\n";
+        cout << "║         LEVEL PROGRESSION           ║\n";
+        cout << "╚══════════════════════════════════════╝\n\n";
+        
+        setColor(7); // White
+        cout << "🎯 HOW LEVELS WORK:\n";
+        cout << "   • Start at Level 1\n";
+        cout << "   • Advance to next level every 10 points\n";
+        cout << "   • Speed increases with each level\n";
+        cout << "   • Challenge yourself to reach higher levels!\n\n";
+        
+        cout << "⚡ SPEED PROGRESSION:\n";
+        cout << "   • Easy:   180ms → 162ms → 144ms ...\n";
+        cout << "   • Normal: 120ms → 108ms → 96ms  ...\n";
+        cout << "   • Hard:    70ms →  63ms →  56ms ...\n\n";
+        
+        cout << "🏆 LEVEL MILESTONES:\n";
+        cout << "   • Level 5:  Intermediate Snake Charmer\n";
+        cout << "   • Level 10: Advanced Snake Master\n";
+        cout << "   • Level 15: Legendary Snake God\n\n";
+        
+        setColor(10); // Green
+        cout << "Press any key to return to menu...";
+        _getch();
     }
     
     void showHighScores() {
@@ -494,8 +641,8 @@ public:
             cout << "    Play a game to set a record!\n";
         } else {
             setColor(11); // Cyan
-            cout << " Rank  Player           Score    Date\n";
-            cout << " ──────────────────────────────────────\n";
+            cout << " Rank  Player           Score    Level  Date\n";
+            cout << " ────────────────────────────────────────────\n";
             
             for (int i = 0; i < scores.size() && i < 10; i++) {
                 setColor(7); // White
@@ -514,13 +661,15 @@ public:
                 
                 // Player name (truncate if too long)
                 string name = scores[i].playerName;
-                if (name.length() > 12) {
-                    name = name.substr(0, 12) + "..";
+                if (name.length() > 10) {
+                    name = name.substr(0, 10) + "..";
                 }
-                cout << setw(14) << left << name;
+                cout << setw(12) << left << name;
                 
-                // Score
+                // Score and calculated level
+                int level = (scores[i].score / 10) + 1;
                 cout << setw(8) << right << scores[i].score;
+                cout << setw(8) << right << level;
                 
                 // Date
                 cout << "  " << scores[i].date << endl;
@@ -542,7 +691,8 @@ public:
         setColor(7); // White
         cout << "🎯 OBJECTIVE:\n";
         cout << "   • Guide the snake to eat food (●)\n";
-        cout << "   • Grow longer without hitting walls or yourself\n\n";
+        cout << "   • Grow longer without hitting walls or yourself\n";
+        cout << "   • Reach higher levels by scoring points\n\n";
         
         cout << "🎮 CONTROLS:\n";
         cout << "   • W or ↑ - Move Up\n";
@@ -554,11 +704,13 @@ public:
         cout << "⚡ GAME RULES:\n";
         cout << "   • Each food gives +1 point\n";
         cout << "   • Snake grows longer when eating\n";
-        cout << "   • Game ends if you hit walls or yourself\n\n";
+        cout << "   • Game ends if you hit walls or yourself\n";
+        cout << "   • Level up every 10 points (speed increases)\n\n";
         
         cout << "🏆 SCORING:\n";
         cout << "   • Try to beat the high score!\n";
-        cout << "   • Top 10 scores are saved\n\n";
+        cout << "   • Top 10 scores are saved\n";
+        cout << "   • Higher levels = higher prestige!\n\n";
         
         setColor(10); // Green
         cout << "Press any key to return to menu...";
@@ -582,18 +734,30 @@ public:
         cout << "Enter choice (1-3): ";
         cin >> modeChoice;
         
-        int speed = (modeChoice == 1) ? 180 : (modeChoice == 2) ? 120 : 70;
+        if (modeChoice < 1 || modeChoice > 3) {
+            cout << "Invalid choice! Defaulting to Normal mode.\n";
+            modeChoice = 2;
+        }
         
-        GameBoard* board = new GameBoard(&highScoreManager);
+        GameBoard* board = new GameBoard(&highScoreManager, modeChoice, playerName);
         board->spawnFood();
+        
+        // Show starting level info
+        system("cls");
+        cout << "\n\n   Starting at Level 1!\n";
+        cout << "   Reach Level 10 to become a Snake Master!\n";
+        cout << "   Current High Score: " << highScoreManager.getHighestScore() << "\n";
+        cout << "   Good luck, " << playerName << "!\n\n";
+        cout << "   Press any key to start...";
+        _getch();
         
         while (board->update()) {
             board->getInput();
-            board->draw(playerName);
-            Sleep(speed);
+            board->draw();
+            Sleep(board->getSpeed());
         }
         
-        board->displayGameOver(playerName);
+        board->displayGameOver();
         delete board;
     }
     
@@ -617,6 +781,9 @@ public:
                     showInstructions();
                     break;
                 case '4':
+                    showLevelProgressionInfo();
+                    break;
+                case '5':
                     cout << "\nThanks for playing! Goodbye 👋\n";
                     return;
                 default:
