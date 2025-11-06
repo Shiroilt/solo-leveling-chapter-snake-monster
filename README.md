@@ -93,17 +93,15 @@ g++ -o snake_game main.cpp Common.cpp HighScoreManager.cpp Food.cpp Snake.cpp Ga
 
 # Run the game
 ./snake_game.exe
-
-Method 2: Visual Studio
+```
+#### Method 2: Visual Studio
 Create a new C++ Console Project
-
 Add all .cpp and .h files to the project
-
 Build and Run
 
 
 
-🎯 How to Play
+#### 🎯 How to Play
 Start the Game: Run the executable
 
 Enter Your Name: Create your player profile
@@ -130,7 +128,8 @@ P - Pause Game
 
 Objective: Eat food (●) to grow and score points without hitting walls or yourself!
 
-🛠️ Technical Implementation
+#### 🛠️ Technical Implementation
+
 🔧 Key Components
 GameManager Class
 Handles main menu navigation
@@ -165,7 +164,7 @@ Manages score sorting and validation
 
 Provides score persistence
 
-💡 Programming Concepts Demonstrated
+#### 💡 Programming Concepts Demonstrated
 Object-Oriented Programming: Clean class hierarchy and encapsulation
 
 File Handling: Persistent data storage and retrieval
@@ -178,7 +177,7 @@ User Input Handling: Responsive keyboard controls
 
 Console Manipulation: Cross-platform compatible UI rendering
 
-🎮 Game Screenshots
+#### 🎮 Game Screenshots
 Main Menu
 ╔══════════════════════════════════════╗
 ║           🐍 SNAKE GAME 🐍           ║
@@ -207,20 +206,8 @@ High Scores Display
   🤝 Collaboration Welcome!
 As a beginner programmer, I'm excited to collaborate and learn from others! This project is open for:
 
-🎯 Areas for Improvement
-Code Review: Suggestions for better practices
-
-Feature Additions: New gameplay elements
-
-Performance Optimization: More efficient algorithms
-
-Cross-Platform Support: Linux/Mac compatibility
-
-Code Refactoring: Better organization and patterns
-
-
 ---------------------------------------------------------------------------------------------------------------------------
-👥 How to Contribute
+#### 👥 How to Contribute
 Fork the repository
 
 Create a feature branch (git checkout -b feature/AmazingFeature)
@@ -231,7 +218,7 @@ Push to the branch (git push origin feature/AmazingFeature)
 
 Open a Pull Request
 
-🐛 Reporting Issues
+#### 🐛 Reporting Issues
 Found a bug or have a suggestion? Open an issue with:
 
 Detailed description of the problem
@@ -244,7 +231,7 @@ Screenshots if applicable
 
 
 
-📊 Project Stats
+#### 📊 Project Stats
 Lines of Code: 1,200+
 
 Classes: 6 main classes
@@ -255,7 +242,7 @@ Features: 15+ gameplay features
 
 Development Time: 2+ weeks of dedicated learning
 
-🎓 Learning Outcomes
+#### 🎓 Learning Outcomes
 Through this project, I've gained practical experience in:
 
 C++ Syntax and Semantics: Deep understanding of C++ features
@@ -270,7 +257,7 @@ Debugging Skills: Identifying and fixing complex issues
 
 Version Control: Proper Git usage and commit practices
 
-🔮 Future Enhancements
+#### 🔮 Future Enhancements
 Power-ups and special food types
 
 Different snake skins and themes
@@ -283,10 +270,10 @@ Save/load game functionality
 
 Graphical interface using SFML or SDL
 
-📜 License
+#### 📜 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-🙏 Acknowledgments
+#### 🙏 Acknowledgments
 Inspired by classic Nokia Snake game
 
 Thanks to the C++ community for excellent learning resources
