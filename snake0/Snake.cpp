@@ -80,6 +80,15 @@ void Snake::draw() {
     }
 }
 
+// void Snake::draw() {
+//     for (int i = 0; i < body.size(); i++) {
+//         gotoxy(body[i].xCoord * 2, body[i].yCoord);
+//         setColor(i == 0 ? 10 : 2); // Head green, body light green
+//         std::cout << "██";
+//     }
+// }
+
+
 void Snake::clearTail() {
     if (!body.empty()) {
         gotoxy(body.back().xCoord, body.back().yCoord);

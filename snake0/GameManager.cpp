@@ -29,7 +29,7 @@ void GameManager::showLevelProgressionInfo() {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     setColor(14);
     cout << "╔══════════════════════════════════════╗\n";
-    cout << "║         LEVEL PROGRESSION            ║\n";
+    cout << "║         LEVEL PROGRESSION             ║\n";
     cout << "╚══════════════════════════════════════╝\n\n";
     
     setColor(7);
