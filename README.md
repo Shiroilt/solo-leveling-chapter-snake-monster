@@ -74,8 +74,6 @@ snake_game/
 
 ├── highscores.txt # High score data storage
 
-├── compile.bat # Windows compilation script
-
 └── README.md # Project documentation
 
 
@@ -96,15 +94,14 @@ g++ -o snake_game main.cpp Common.cpp HighScoreManager.cpp Food.cpp Snake.cpp Ga
 # Run the game
 ./snake_game.exe
 
-Method 2: Using Compile Script
-# Run the batch file (Windows)
-compile.bat
-Method 3: Visual Studio
+Method 2: Visual Studio
 Create a new C++ Console Project
 
 Add all .cpp and .h files to the project
 
 Build and Run
+
+
 
 🎯 How to Play
 Start the Game: Run the executable
@@ -221,6 +218,8 @@ Cross-Platform Support: Linux/Mac compatibility
 
 Code Refactoring: Better organization and patterns
 
+
+---------------------------------------------------------------------------------------------------------------------------
 👥 How to Contribute
 Fork the repository
 
@@ -242,6 +241,8 @@ Steps to reproduce
 Expected vs actual behavior
 
 Screenshots if applicable
+
+
 
 📊 Project Stats
 Lines of Code: 1,200+
@@ -301,9 +302,12 @@ Built with passion for learning programming fundamentals
 
 Happy Coding! 🎯
 
+
+
+
 </div>
 📞 Contact
-Developer: Shashank
+Developer: Shashwat Soni
 
 Project: Snake Game C++
 
@@ -312,57 +316,3 @@ Experience Level: Beginner Programmer
 Goal: Learn and collaborate with the programming community
 
 This README was generated with love and attention to detail. Feel free to customize it further!
-
-## How to save this as a README.md file:
-
-1. **Copy the entire content above**
-2. **Create a new file** in your project folder called `README.md`
-3. **Paste the content** into the file
-4. **Save the file**
-
-## Additional files you might want to create:
-
-### compile.bat (Windows compilation script)
-```batch
-@echo off
-echo ===============================
-echo    Snake Game Compilation
-echo ===============================
-echo.
-
-echo Compiling Snake Game...
-g++ -o snake_game.exe main.cpp Common.cpp HighScoreManager.cpp Food.cpp Snake.cpp GameBoard.cpp GameManager.cpp
-
-if %errorlevel%==0 (
-    echo.
-    echo ✅ Compilation successful!
-    echo.
-    echo 🎮 Run the game with: snake_game.exe
-) else (
-    echo.
-    echo ❌ Compilation failed!
-    echo Please check the error messages above.
-)
-
-echo.
-pause
-
-# Compiled files
-*.exe
-*.o
-*.obj
-
-# Build directories
-build/
-Debug/
-Release/
-
-# IDE files
-.vs/
-*.vcxproj
-*.filters
-*.sln
-
-# System files
-.DS_Store
-Thumbs.db
