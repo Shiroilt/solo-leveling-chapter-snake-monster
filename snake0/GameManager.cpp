@@ -7,9 +7,9 @@ void GameManager::showMainMenu() {
     system("cls");
     setColor(11);
     cout << "╔══════════════════════════════════════╗\n";
-    cout << "║           🐍 SNAKE GAME 🐍           ║\n";
+    cout << "║           🐍 SNAKE GAME 🐍          ║\n";
     cout << "║                                      ║\n";
-    cout << "║          Classic Arcade Fun!         ║\n";
+    cout << "║           Classic Arcade Fun!        ║\n";
     cout << "╚══════════════════════════════════════╝\n\n";
     
     setColor(7);
@@ -25,7 +25,7 @@ void GameManager::showLevelProgressionInfo() {
     system("cls");
     setColor(14);
     cout << "╔══════════════════════════════════════╗\n";
-    cout << "║         LEVEL PROGRESSION           ║\n";
+    cout << "║         LEVEL PROGRESSION            ║\n";
     cout << "╚══════════════════════════════════════╝\n\n";
     
     setColor(7);
