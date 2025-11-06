@@ -179,8 +179,9 @@ Console Manipulation: Cross-platform compatible UI rendering
 
 #### 🎮 Game Screenshots
 Main Menu
+```bash
 ╔══════════════════════════════════════╗
-║           🐍 SNAKE GAME 🐍           ║
+║           🐍 SNAKE GAME 🐍          ║
 ║                                      ║
 ║          Classic Arcade Fun!         ║
 ╚══════════════════════════════════════╝
@@ -205,7 +206,7 @@ High Scores Display
 
   🤝 Collaboration Welcome!
 As a beginner programmer, I'm excited to collaborate and learn from others! This project is open for:
-
+```
 ---------------------------------------------------------------------------------------------------------------------------
 #### 👥 How to Contribute
 Fork the repository
@@ -294,6 +295,7 @@ Happy Coding! 🎯
 
 </div>
 📞 Contact
+
 Developer: Shashwat Soni
 
 Project: Snake Game C++
