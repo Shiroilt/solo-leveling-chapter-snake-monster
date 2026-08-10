@@ -17,6 +17,9 @@ GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name) 
     
     snake1 = new Snake(consoleWidth / 3, consoleHeight / 2, 3, DIR_RIGHT);
     snake2 = new Snake(2 * consoleWidth / 3, consoleHeight / 2, 3, DIR_LEFT);
+    
+    drawBorder();
+    displayInstructions();
 }
 
 GameBoard::~GameBoard() { 
@@ -127,12 +130,7 @@ void GameBoard::showLevelUpMessage() {
 }
 
 void GameBoard::draw() {
-    COORD coord = {0, 0};
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-    drawBorder();
     displayGameInfo();
-    displayInstructions();
-    
     snake1->draw(10, 2);
     snake2->draw(11, 3);
     food.draw();
@@ -205,7 +203,7 @@ bool GameBoard::update() {
 }
 
 void GameBoard::getInput() {
-    if (_kbhit()) {
+    while (_kbhit()) {
         int key = _getch();
 
         if (key == 0 || key == 224) {
