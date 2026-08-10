@@ -1,8 +1,8 @@
 #include "GameBoard.h"
 #include <iostream>
 using namespace std;
-GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name) : 
-    score(0), level(1), gameOver(false), highScoreManager(hsm), playerName(name) {
+GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name, const string& name2) : 
+    score(0), score2(0), level(1), gameOver(false), highScoreManager(hsm), playerName(name), playerName2(name2) {
     srand(time(0));
     initScreen();
     
@@ -14,14 +14,17 @@ GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name) 
     }
     currentSpeed = baseSpeed;
     
-    snake = new Snake(consoleWidth / 2, consoleHeight / 2, 3);
+    snake = new Snake(consoleWidth / 3, consoleHeight / 2, 3);
+    snake2 = new Snake(2 * consoleWidth / 3, consoleHeight / 2, 3);
 }
 
 GameBoard::~GameBoard() { 
     delete snake; 
+    delete snake2;
 }
 
 int GameBoard::getScore() { return score; }
+int GameBoard::getScore2() { return score2; }
 int GameBoard::getLevel() { return level; }
 int GameBoard::getSpeed() { return currentSpeed; }
 bool GameBoard::isGameOver() { return gameOver; }
@@ -35,7 +38,10 @@ void GameBoard::updateLevel() {
 }
 
 void GameBoard::spawnFood() {
-    food.spawn(snake->getBody(), consoleWidth, consoleHeight);
+    vector<Point> occupied = snake->getBody();
+    const vector<Point>& body2 = snake2->getBody();
+    occupied.insert(occupied.end(), body2.begin(), body2.end());
+    food.spawn(occupied, consoleWidth, consoleHeight);
 }
 
 void GameBoard::drawBorder() {
@@ -77,6 +83,9 @@ void GameBoard::displayGameInfo() {
     gotoxy(consoleWidth - 35, 0);
     setColor(6);
     cout << "Best: " << highScoreManager->getHighestScore();
+
+    gotoxy(2, consoleHeight - 2);
+    cout << "P2: " << playerName2 << "  Score: " << score2;
 }
 
 void GameBoard::displayInstructions() {
@@ -131,6 +140,7 @@ void GameBoard::draw() {
     displayInstructions();
     
     snake->draw();
+    snake2->draw();
     food.draw();
 }
 
@@ -154,9 +164,28 @@ bool GameBoard::update() {
         
         spawnFood();
     }
+
+    snake2->clearTail();
+    bool foodEaten2 = snake2->move(food);
+
+    if (foodEaten2) {
+        score2++;
+        MessageBeep(MB_ICONASTERISK);
+        spawnFood();
+    }
     
-    if (snake->checkSelfCollision() || snake->checkBoundaryCollision(consoleWidth, consoleHeight)) {
+    bool p1Crashed = snake->checkSelfCollision() ||
+                      snake->checkBoundaryCollision(consoleWidth, consoleHeight) ||
+                      snake->checkCollisionWithSnake(*snake2);
+    bool p2Crashed = snake2->checkSelfCollision() ||
+                      snake2->checkBoundaryCollision(consoleWidth, consoleHeight) ||
+                      snake2->checkCollisionWithSnake(*snake);
+
+    if (p1Crashed || p2Crashed) {
         gameOver = true;
+        if (p1Crashed && p2Crashed) loserName = playerName + " and " + playerName2 + " (both)";
+        else if (p1Crashed) loserName = playerName;
+        else loserName = playerName2;
         return false;
     }
     
@@ -177,10 +206,10 @@ void GameBoard::getInput() {
             }
         } else {
             switch (tolower(key)) {
-                case 'w': snake->changeDirection(DIR_UP); break;
-                case 'a': snake->changeDirection(DIR_LEFT); break;
-                case 's': snake->changeDirection(DIR_DOWN); break;
-                case 'd': snake->changeDirection(DIR_RIGHT); break;
+                case 'w': snake2->changeDirection(DIR_UP); break;
+                case 'a': snake2->changeDirection(DIR_LEFT); break;
+                case 's': snake2->changeDirection(DIR_DOWN); break;
+                case 'd': snake2->changeDirection(DIR_RIGHT); break;
                 case 'p':
                     gotoxy(consoleWidth / 2 - 5, consoleHeight / 2);
                     setColor(14);
@@ -204,8 +233,10 @@ void GameBoard::displayGameOver() {
     cout << "   ╚══════════════════════════════╝\n\n";
     
     setColor(7);
+    cout << "   " << loserName << " lost!\n\n";
     cout << "   Player: " << playerName << endl;
     cout << "   Final Score: " << score << endl;
+    cout << "   " << playerName2 << " Score: " << score2 << endl;
     cout << "   Level Reached: " << level << endl;
     cout << "   High Score: " << highScoreManager->getHighestScore() << endl;
     
