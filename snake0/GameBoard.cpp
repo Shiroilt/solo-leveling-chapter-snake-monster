@@ -5,6 +5,7 @@ GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name) 
     score1(0), score2(0), level(1), gameOver(false), loser(0), highScoreManager(hsm), playerName(name) {
     srand(time(0));
     initScreen();
+    system("cls");
     
     switch(difficulty) {
         case 1: baseSpeed = 180; break;
@@ -126,7 +127,8 @@ void GameBoard::showLevelUpMessage() {
 }
 
 void GameBoard::draw() {
-    system("cls");
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
     drawBorder();
     displayGameInfo();
     displayInstructions();
