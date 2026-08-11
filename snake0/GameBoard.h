@@ -5,7 +5,9 @@
 #include "Snake.h"
 #include "Food.h"
 #include "HighScoreManager.h"
+#ifdef _WIN32
 #include <conio.h>
+#endif
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
