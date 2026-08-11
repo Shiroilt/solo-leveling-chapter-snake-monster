@@ -68,16 +68,6 @@ bool Snake::checkBoundaryCollision(int maxX, int maxY) {
             head.yCoord <= 0 || head.yCoord >= maxY - 1);
 }
 
-bool Snake::checkCollisionWithSnake(const Snake& other) {
-    Point head = body[0];
-    for (const Point& segment : other.body) {
-        if (head == segment) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void Snake::draw() {
     gotoxy(body[0].xCoord, body[0].yCoord);
     setColor(10);
