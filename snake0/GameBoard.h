@@ -13,13 +13,16 @@
 
 class GameBoard {
 private:
-    Snake* snake;
+    Snake* snake1;
+    Snake* snake2;
     Food food;
-    int score;
+    int score1;
+    int score2;
     int level;
     int baseSpeed;
     int currentSpeed;
     bool gameOver;
+    int loser;
     HighScoreManager* highScoreManager;
     string playerName;
 

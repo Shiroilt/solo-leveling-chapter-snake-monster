@@ -8,7 +8,7 @@ Food::Food() : active(false) {}
 Point Food::getPosition() { return position; }
 bool Food::isActive() { return active; }
 
-void Food::spawn(const vector<Point>& snakeBody, int maxX, int maxY) {
+void Food::spawn(const vector<Point>& snake1Body, const vector<Point>& snake2Body, int maxX, int maxY) {
     vector<Point> validPositions;
     
     for (int x = 2; x < maxX - 2; x++) {
@@ -16,10 +16,18 @@ void Food::spawn(const vector<Point>& snakeBody, int maxX, int maxY) {
             Point candidate(x, y);
             bool occupied = false;
             
-            for (const Point& segment : snakeBody) {
+            for (const Point& segment : snake1Body) {
                 if (candidate == segment) {
                     occupied = true;
                     break;
+                }
+            }
+            if (!occupied) {
+                for (const Point& segment : snake2Body) {
+                    if (candidate == segment) {
+                        occupied = true;
+                        break;
+                    }
                 }
             }
             

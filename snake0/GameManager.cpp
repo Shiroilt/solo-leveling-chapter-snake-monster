@@ -177,6 +177,7 @@ void GameManager::startGame() {
     cout << "   Good luck, " << playerName << "!\n\n";
     cout << "   Press any key to start...";
     _getch();
+    system("cls");
     
     while (board->update()) {
         board->getInput();
