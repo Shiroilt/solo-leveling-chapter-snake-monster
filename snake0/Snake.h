@@ -21,7 +21,6 @@ public:
     bool move(Food& food);
     bool checkSelfCollision();
     bool checkBoundaryCollision(int maxX, int maxY);
-    bool checkCollisionWithSnake(const Snake& other);
     void draw();
     void clearTail();
 };

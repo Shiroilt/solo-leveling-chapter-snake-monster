@@ -1,6 +1,5 @@
 #include "HighScoreManager.h"
 #include <iostream>
-#include <ctime>      // <-- add this line
 #define HIGHSCORE_FILE "highscores.txt"
 using namespace std;
 HighScoreManager::HighScoreManager() {
