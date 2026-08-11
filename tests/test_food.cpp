@@ -1,59 +1,43 @@
-#include <iostream>
 #include <cassert>
+#include <iostream>
+#include <vector>
 #include "../snake0/Food.h"
 
-void test_food_initially_inactive() {
+void runFoodTests() {
     Food food;
 
+    // Initially inactive
     assert(food.isActive() == false);
 
-    std::cout << "PASS: Food is initially inactive\\n";
-}
+    // Create a small snake body
+    std::vector<Point> snakeBody = {
+        Point(5, 5),
+        Point(5, 6),
+        Point(5, 7)
+    };
 
-void test_food_activation() {
-    Food food;
+    // Spawn food
+    food.spawn(snakeBody, 20, 20);
 
-    food.setPosition({5, 5});
-
+    // Should now be active
     assert(food.isActive() == true);
 
-    std::cout << "PASS: Food becomes active after setting position\\n";
-}
+    Point p = food.getPosition();
 
-void test_food_position() {
-    Food food;
+    // Food should be inside the board
+    assert(p.xCoord >= 1);
+    assert(p.xCoord < 19);
+    assert(p.yCoord >= 1);
+    assert(p.yCoord < 19);
 
-    Point p = {8, 12};
-    food.setPosition(p);
+    // Food should not spawn on the snake
+    for (const auto& segment : snakeBody) {
+        assert(!(segment == p));
+    }
 
-    Point foodPos = food.getPosition();
-
-    assert(foodPos.x == 8);
-    assert(foodPos.y == 12);
-
-    std::cout << "PASS: Food position is stored correctly\\n";
-}
-
-void test_food_deactivation() {
-    Food food;
-
-    food.setPosition({3, 4});
+    // Deactivate
     food.deactivate();
-
     assert(food.isActive() == false);
 
-    std::cout << "PASS: Food deactivates correctly\\n";
-}
-
-int main() {
-    std::cout << "Running Food Tests...\\n\\n";
-
-    test_food_initially_inactive();
-    test_food_activation();
-    test_food_position();
-    test_food_deactivation();
-
-    std::cout << "\\nAll food tests passed successfully!\\n";
-
-    return 0;
+    std::cout << "Food tests passed\\n";
 }

@@ -1,71 +1,29 @@
-#include <iostream>
 #include <cassert>
-#include <cstdio>
+#include <iostream>
 #include "../snake0/HighScoreManager.h"
 
-const std::string TEST_FILE = "test_highscore.dat";
+void runHighScoreTests() {
+    HighScoreManager manager;
 
-void cleanup() {
-    std::remove(TEST_FILE.c_str());
-}
+    manager.loadHighScores();
 
-void test_save_highscore() {
-    cleanup();
+    int before = manager.getHighestScore();
 
-    HighScoreManager manager(TEST_FILE);
+    // Add a score that should become the highest score
+    manager.addHighScore("CI_TEST", 99999);
+    manager.saveHighScores();
 
-    manager.saveScore("Player1", 150);
-
-    int highest = manager.getHighestScore();
-
-    assert(highest == 150);
-
-    std::cout << "PASS: High score saved correctly\\n";
-}
-
-void test_load_highscore() {
-    cleanup();
-
-    {
-        HighScoreManager manager(TEST_FILE);
-        manager.saveScore("Player1", 200);
-    }
-
-    HighScoreManager manager(TEST_FILE);
+    // Reload from file
+    manager.loadHighScores();
 
     int highest = manager.getHighestScore();
 
-    assert(highest == 200);
+    // Verify persistence through the public API
+    assert(highest == 99999);
 
-    std::cout << "PASS: High score loaded correctly\\n";
-}
+    // Verify high score qualification logic
+    assert(manager.isHighScore(99999));
+    assert(manager.qualifiesAsHighScore(99999));
 
-void test_multiple_scores() {
-    cleanup();
-
-    HighScoreManager manager(TEST_FILE);
-
-    manager.saveScore("A", 100);
-    manager.saveScore("B", 250);
-    manager.saveScore("C", 180);
-
-    int highest = manager.getHighestScore();
-
-    assert(highest == 250);
-
-    std::cout << "PASS: Highest score selected correctly\\n";
-}
-
-int main() {
-    std::cout << "Running High Score Tests...\\n\\n";
-
-    test_save_highscore();
-    test_load_highscore();
-    test_multiple_scores();
-
-    cleanup();
-
-    std::cout << "\\nAll high score tests passed successfully!\\n";
-
-    return 0;
+    std::cout << "High score tests passed\\n";
 }

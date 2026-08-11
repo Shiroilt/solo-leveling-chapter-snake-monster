@@ -1,0 +1,29 @@
+name: C++ Pull Request Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    image: ubuntu:22.04
+
+    steps:
+      - run: apt-get update
+      - run: apt-get install -y g++
+
+      - run: |
+          g++ -std=c++17 -I./snake0 \
+          snake0/Common.cpp \
+          snake0/Snake.cpp \
+          snake0/Food.cpp \
+          snake0/HighScoreManager.cpp \
+          tests/run_all_tests.cpp \
+          tests/test_snake_initialization.cpp \
+          tests/test_snake_movement.cpp \
+          tests/test_food.cpp \
+          tests/test_highscore.cpp \
+          -o run_tests
+
+      - run: ./run_tests
