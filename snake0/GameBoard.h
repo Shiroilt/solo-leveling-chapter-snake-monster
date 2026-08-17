@@ -16,6 +16,21 @@
 // Changing this constant is the only edit needed to change player count.
 static const int NUM_PLAYERS = 2;
 
+// Per-player configuration: controls, colors, and spawn position fraction.
+// All player-specific settings live here; no player data is hardcoded elsewhere.
+struct PlayerConfig {
+    int  headColor;
+    int  bodyColor;
+    char initialDirection;
+    // Spawn X position as a fraction of console width (numerator out of 3)
+    int  spawnXFraction;
+};
+
+static const PlayerConfig PLAYER_CONFIG[NUM_PLAYERS] = {
+    { 10, 2, DIR_RIGHT, 1 },  // Player 1: green head, arrow keys, left-third spawn
+    { 11, 3, DIR_LEFT,  2 },  // Player 2: cyan head, WASD keys, right-third spawn
+};
+
 class GameBoard {
 private:
     Snake* snakes[NUM_PLAYERS];
