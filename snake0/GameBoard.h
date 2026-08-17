@@ -12,28 +12,27 @@
 #include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 class GameBoard {
 private:
-    Snake* snake;
-    Snake* snake2;
+    // Snake count is defined in exactly one place: snakes.size().
+    // Adding or removing a player requires changing only the constructor.
+    std::vector<Snake*> snakes;
+    std::vector<int> scores;
+    std::vector<std::string> playerNames;
     Food food;
-    int score;
-    int score2;
     int level;
     int baseSpeed;
     int currentSpeed;
     bool gameOver;
     string loserName;
     HighScoreManager* highScoreManager;
-    string playerName;
-    string playerName2;
 
 public:
-    GameBoard(HighScoreManager* hsm, int difficulty, const string& name, const string& name2 = "Player 2");
+    GameBoard(HighScoreManager* hsm, int difficulty, const string& name);
     ~GameBoard();
     int getScore();
-    int getScore2();
     int getLevel();
     int getSpeed();
     bool isGameOver();
