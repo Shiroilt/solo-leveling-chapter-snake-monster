@@ -13,7 +13,8 @@ public:
     Food();
     Point getPosition();
     bool isActive();
-    void spawn(const vector<Point>& snake1Body, const vector<Point>& snake2Body, int maxX, int maxY);
+    // Takes a list of all snake bodies so food never spawns on any snake
+    void spawn(const vector<const vector<Point>*>& snakeBodies, int maxX, int maxY);
     void deactivate();
     void draw();
 };
