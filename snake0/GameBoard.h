@@ -30,7 +30,7 @@ private:
     HighScoreManager* highScoreManager;
 
 public:
-    GameBoard(HighScoreManager* hsm, int difficulty, const string& name);
+    GameBoard(HighScoreManager* hsm, int difficulty, const string& name, const string& name2 = "Player 2");
     ~GameBoard();
     int getScore();
     int getLevel();

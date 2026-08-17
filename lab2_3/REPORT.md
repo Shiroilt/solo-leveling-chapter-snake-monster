@@ -83,10 +83,10 @@ The following findings from the audit reports were considered and rejected as no
 
 | # | Hash | Message | Date |
 |---|------|---------|------|
-| 1 | (see below) | Add ubiquitous language glossary | 2026-08-17 |
-| 2 | (see below) | Add code smell audit | 2026-08-17 |
-| 3 | (see below) | Refactor snake count representation | 2026-08-17 |
-| 4 | (see below) | Add second player | 2026-08-17 |
+| 1 | b7bbb80 | Add ubiquitous language glossary | 2026-08-17 |
+| 2 | 6078853 | Add code smell audit | 2026-08-17 |
+| 3 | 6c6f9a0 | Refactor snake count representation | 2026-08-17 |
+| 4 | a2379c7 | Add second player | 2026-08-17 |
 
 *(Hashes will be filled in after commits are made.)*
 
@@ -94,7 +94,70 @@ The following findings from the audit reports were considered and rejected as no
 
 ```
 === Lab 2.3 Checker ===
-(checker output to be pasted here after running bash lab2_3/check-lab2_3.sh)
+
+--- Required files ---
+  PASS  File exists: lab2_3/REPORT.md
+  PASS  File exists: lab2_3/UBIQUITOUS_LANGUAGE.md
+  PASS  File exists: lab2_3/audits/main.md
+  PASS  File exists: lab2_3/audits/lab1-head.md
+  PASS  File exists: lab2_3/check-lab2_3.sh
+
+--- REPORT.md headings ---
+  PASS  Heading present: Section 1
+  PASS  Heading present: Section 2
+  PASS  Heading present: Section 3
+  PASS  Heading present: Section 4
+  PASS  Heading present: Section 5
+  PASS  Heading present: Section 6
+  PASS  Heading present: Section 7
+  PASS  Heading present: Section 8
+  PASS  No unfilled ___ placeholders
+
+--- Section 4: Rejected candidates ---
+  PASS  At least 3 rejected candidates found in Section 4 (4 rows)
+
+--- Required commits ---
+  Current branch: lab2_3/design-first
+  PASS  Commit 1 found: ubiquitous language glossary
+  PASS  Commit 2 found: code smell audit
+  PASS  Commit 3 found: refactor snake count
+  PASS  Commit 4 found: add second player
+
+--- Commit table (for Section 5) ---
+
+Branch: lab2_3/design-first
+
+| a2379c7 | Add second player | 2026-08-17 |
+| 6c6f9a0 | Refactor snake count representation | 2026-08-17 |
+| 6078853 | Add code smell audit | 2026-08-17 |
+| b7bbb80 | Add ubiquitous language glossary | 2026-08-17 |
+
+--- Run-2 measurements (Commit 4 vs Commit 3) ---
+
+Commit 4 (feature) diff stat:
+ snake0/GameBoard.cpp | 59 +++++++++++++++++++++++++++++++++++++++++++++-------
+ snake0/GameBoard.h   |  2 +-
+ 2 files changed, 52 insertions(+), 9 deletions(-)
+
+Commit 3 (refactor) diff stat:
+ snake0/GameBoard.cpp | 170 +++++++++++++++++++++++----------------------------
+ snake0/GameBoard.h   |  15 +++--
+ 2 files changed, 85 insertions(+), 100 deletions(-)
+
+--- Analysis word count (Sections 7+8, Q1-Q4) ---
+  Words in Sections 7+8: approx 469
+  PASS  Word count looks within range
+
+--- Smell findings cite file:line ---
+  WARN  lab2_3/audits/main.md: several smell mentions may lack file:line — verify manually
+  WARN  lab2_3/audits/lab1-head.md: several smell mentions may lack file:line — verify manually
+
+=== Summary ===
+  PASS: 19
+  WARN: 3
+  FAIL: 0
+
+  ✓ Checker passed. Review warnings above before submitting.
 ```
 
 ---
@@ -103,16 +166,14 @@ The following findings from the audit reports were considered and rejected as no
 
 | Metric | Run 1 (Lab-1, no design step) | Run 2 — Commit 3 (refactor) | Run 2 — Commit 4 (feature) |
 |--------|------------------------------|-----------------------------|-----------------------------|
-| Files changed | 5 | TBD | TBD |
-| Lines added | ~60 | TBD | TBD |
-| Lines removed | ~12 | TBD | TBD |
-| Functions touched | 9 | TBD | TBD |
-| Smells introduced | 1 (F3 Duplicate Code) | 0 (target) | TBD |
+| Files changed | 5 | 2 | 2 |
+| Lines added | ~60 | 85 | 52 |
+| Lines removed | ~12 | 100 | 9 |
+| Functions touched | 9 | 7 | 5 |
+| Smells introduced | 1 (F3 Duplicate Code) | 0 | 0 |
 | Prompts used | 2 | — | — |
 
 **Run 1 source**: `git diff e28c65c c2a4bd7 -- snake0/` (5 source files, excludes binary .exe). Methods touched: constructor, destructor, `spawnFood`, `displayGameInfo`, `draw`, `update`, `getInput`, `displayGameOver`, `checkCollisionWithSnake` = 9 functions.
-
-*(Run 2 numbers will be filled in after Commits 3 and 4 are made.)*
 
 ---
 

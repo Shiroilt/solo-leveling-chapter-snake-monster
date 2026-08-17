@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name) :
+GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name, const string& name2) :
     level(1), gameOver(false), highScoreManager(hsm) {
     srand(time(0));
     initScreen();
@@ -16,9 +16,13 @@ GameBoard::GameBoard(HighScoreManager* hsm, int difficulty, const string& name) 
     currentSpeed = baseSpeed;
 
     // Snake count is defined here: one entry in the vector = one snake.
-    snakes.push_back(new Snake(consoleWidth / 2, consoleHeight / 2, 3));
+    snakes.push_back(new Snake(consoleWidth / 3, consoleHeight / 2, 3));
     scores.push_back(0);
     playerNames.push_back(name);
+
+    snakes.push_back(new Snake(2 * consoleWidth / 3, consoleHeight / 2, 3));
+    scores.push_back(0);
+    playerNames.push_back(name2);
 }
 
 GameBoard::~GameBoard() {
@@ -88,6 +92,11 @@ void GameBoard::displayGameInfo() {
     gotoxy(consoleWidth - 35, 0);
     setColor(6);
     cout << "Best: " << highScoreManager->getHighestScore();
+
+    if (snakes.size() > 1) {
+        gotoxy(2, consoleHeight - 2);
+        cout << "P2: " << playerNames[1] << "  Score: " << scores[1];
+    }
 }
 
 void GameBoard::displayInstructions() {
@@ -170,14 +179,41 @@ bool GameBoard::update() {
         }
     }
 
+    bool anyCrashed = false;
+    vector<bool> crashed(snakes.size(), false);
+
     for (int i = 0; i < (int)snakes.size(); i++) {
-        bool crashed = snakes[i]->checkSelfCollision() ||
-                       snakes[i]->checkBoundaryCollision(consoleWidth, consoleHeight);
-        if (crashed) {
-            gameOver = true;
-            loserName = playerNames[i];
-            return false;
+        crashed[i] = snakes[i]->checkSelfCollision() ||
+                     snakes[i]->checkBoundaryCollision(consoleWidth, consoleHeight);
+        
+        for (int j = 0; j < (int)snakes.size(); j++) {
+            if (i != j) {
+                if (snakes[i]->checkCollisionWithSnake(*snakes[j])) {
+                    crashed[i] = true;
+                }
+            }
         }
+        if (crashed[i]) anyCrashed = true;
+    }
+
+    if (anyCrashed) {
+        gameOver = true;
+        loserName = "";
+        for (int i = 0; i < (int)snakes.size(); i++) {
+            if (crashed[i]) {
+                if (!loserName.empty()) loserName += " and ";
+                loserName += playerNames[i];
+            }
+        }
+        // Use exact formatting from Lab 1
+        int crashCount = 0;
+        for (bool c : crashed) {
+            if (c) crashCount++;
+        }
+        if (crashCount > 1) {
+            loserName += " (both)";
+        }
+        return false;
     }
 
     return true;
@@ -197,6 +233,10 @@ void GameBoard::getInput() {
             }
         } else {
             switch (tolower(key)) {
+                case 'w': if (snakes.size() > 1) snakes[1]->changeDirection(DIR_UP); break;
+                case 'a': if (snakes.size() > 1) snakes[1]->changeDirection(DIR_LEFT); break;
+                case 's': if (snakes.size() > 1) snakes[1]->changeDirection(DIR_DOWN); break;
+                case 'd': if (snakes.size() > 1) snakes[1]->changeDirection(DIR_RIGHT); break;
                 case 'p':
                     gotoxy(consoleWidth / 2 - 5, consoleHeight / 2);
                     setColor(14);
@@ -223,6 +263,9 @@ void GameBoard::displayGameOver() {
     cout << "   " << loserName << " lost!\n\n";
     cout << "   Player: " << playerNames[0] << endl;
     cout << "   Final Score: " << scores[0] << endl;
+    if (snakes.size() > 1) {
+        cout << "   " << playerNames[1] << " Score: " << scores[1] << endl;
+    }
     cout << "   Level Reached: " << level << endl;
     cout << "   High Score: " << highScoreManager->getHighestScore() << endl;
 
