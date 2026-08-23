@@ -1,19 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#ifdef _WIN32
-    #include <windows.h>
-    #include <conio.h>
-#else
-    #include <unistd.h>
-    inline void Sleep(unsigned int ms) {
-        usleep(ms * 1000);
-    }
-#endif
-
-#include <iostream>
-#include <vector>
-#include <string>
+#include <windows.h>
 
 using namespace std;
 
@@ -28,7 +16,7 @@ struct Point {
     int xCoord, yCoord;
     Point() : xCoord(0), yCoord(0) {}
     Point(int x, int y) : xCoord(x), yCoord(y) {}
-
+    
     bool operator==(const Point& other) const {
         return xCoord == other.xCoord && yCoord == other.yCoord;
     }
