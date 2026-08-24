@@ -86,9 +86,7 @@ The following findings from the audit reports were considered and rejected as no
 | 1 | b7bbb80 | Add ubiquitous language glossary | 2026-08-17 |
 | 2 | 6078853 | Add code smell audit | 2026-08-17 |
 | 3 | 6c6f9a0 | Refactor snake count representation | 2026-08-17 |
-| 4 | a2379c7 | Add second player | 2026-08-17 |
-
-*(Hashes will be filled in after commits are made.)*
+| 4 | 382bc89 | Add second player | 2026-08-17 |
 
 ### Checker result
 
