@@ -1,11 +1,15 @@
 #include "Snake.h"
 #include <iostream>
 using namespace std;
-Snake::Snake(int x, int y, int initialLength) {
+Snake::Snake(int x, int y, int initialLength, char initialDirection) {
     for (int i = 0; i < initialLength; i++) {
-        body.push_back(Point(x - i, y));
+        if (initialDirection == DIR_LEFT) {
+            body.push_back(Point(x + i, y));
+        } else {
+            body.push_back(Point(x - i, y));
+        }
     }
-    direction = DIR_RIGHT;
+    direction = initialDirection;
     length = initialLength;
 }
 
@@ -62,20 +66,30 @@ bool Snake::checkSelfCollision() {
     return false;
 }
 
+bool Snake::checkOtherCollision(const vector<Point>& otherBody) {
+    Point head = body[0];
+    for (const Point& segment : otherBody) {
+        if (head == segment) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Snake::checkBoundaryCollision(int maxX, int maxY) {
     Point head = body[0];
     return (head.xCoord <= 0 || head.xCoord >= maxX - 1 ||
             head.yCoord <= 0 || head.yCoord >= maxY - 1);
 }
 
-void Snake::draw() {
+void Snake::draw(int headColor, int bodyColor) {
     gotoxy(body[0].xCoord, body[0].yCoord);
-    setColor(10);
+    setColor(headColor);
     cout << "■";
     
     for (int i = 1; i < body.size(); i++) {
         gotoxy(body[i].xCoord, body[i].yCoord);
-        setColor(2);
+        setColor(bodyColor);
         cout << "□";
     }
 }
