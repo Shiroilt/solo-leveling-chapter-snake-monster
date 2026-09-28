@@ -2,7 +2,7 @@
 #define SNAKE_H
 
 #include "Common.h"
-#include "Food.h"
+#include "FoodPort.h"
 #include <vector>
 
 class Snake {
@@ -18,7 +18,7 @@ public:
     char getDirection();
     Point getHead();
     void changeDirection(char newDirection);
-    bool move(Food& food);
+    bool move(FoodPort& food);
     bool checkSelfCollision();
     bool checkBoundaryCollision(int maxX, int maxY);
     void draw();

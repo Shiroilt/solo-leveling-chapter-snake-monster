@@ -25,7 +25,7 @@ void Snake::changeDirection(char newDirection) {
         direction = newDirection;
 }
 
-bool Snake::move(Food& food) {
+bool Snake::move(FoodPort& food) {
     Point newHead = body[0];
     Point oldTail = body.back();
     
