@@ -1,0 +1,6 @@
+tests
+*.gcda
+*.gcno
+*.gcov
+*.gcov.json.gz
+coverage-before-seam.txt
