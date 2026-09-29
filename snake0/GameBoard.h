@@ -5,26 +5,32 @@
 #include "Snake.h"
 #include "Food.h"
 #include "HighScoreManager.h"
+#ifdef _WIN32
 #include <conio.h>
+#endif
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 class GameBoard {
 private:
-    Snake* snake;
+    // Snake count is defined in exactly one place: snakes.size().
+    // Adding or removing a player requires changing only the constructor.
+    std::vector<Snake*> snakes;
+    std::vector<int> scores;
+    std::vector<std::string> playerNames;
     Food food;
-    int score;
     int level;
     int baseSpeed;
     int currentSpeed;
     bool gameOver;
+    string loserName;
     HighScoreManager* highScoreManager;
-    string playerName;
 
 public:
-    GameBoard(HighScoreManager* hsm, int difficulty, const string& name);
+    GameBoard(HighScoreManager* hsm, int difficulty, const string& name, const string& name2 = "Player 2");
     ~GameBoard();
     int getScore();
     int getLevel();
