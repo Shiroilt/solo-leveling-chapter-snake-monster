@@ -2,9 +2,10 @@
 #define FOOD_H
 
 #include "Common.h"
+#include "FoodPort.h"
 #include <vector>
 
-class Food {
+class Food : public FoodPort {
 private:
     Point position;
     bool active;
